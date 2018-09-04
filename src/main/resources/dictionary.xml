@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<appliances>
+<appliance name="﻿空调(标准UART)"  code="0xAC" value="1"/>
+<appliance name="空调(原有SPI)"  code="0xAB"  value="2"/>
+<appliance name="除湿机"  code="0xA1" value="3"/>
+<appliance name="微波炉"  code="0xB0" value="4"/>
+<appliance name="大烤箱"  code="0xB1"  value="5"/>
+<appliance name="蒸汽"  code="0xB2" value="6"/>
+<appliance name="消毒柜"  code="0xB3" value="7"/>
+<appliance name="小烤箱"  code="0xB4" value="8"/>
+<appliance name="抽油烟机"  code="0xB6" value="9"/>
+<appliance name="燃气炉"  code="0xB7"  value="10"/>
+<appliance name="吸尘器"  code="0xB8" value="11"/>
+<appliance name="多头炉"  code="0xB9" value="12"/>
+<appliance name="冰箱"  code="0xCA" value="13"/>
+<appliance name="中央空调"  code="0xCC" value="14"/>
+<appliance name="空气能热水器"  code="0xCD" value="15"/>
+<appliance name="波轮洗衣机"  code="0xDA" value="16"/>
+<appliance name="滚筒洗衣机"  code="0xDB" value="17"/>
+<appliance name="干衣机"  code="0xDC" value="18"/>
+<appliance name="电饭煲"  code="0xEA" value="19"/>
+<appliance name="电磁炉"  code="0xEB" value="20"/>
+<appliance name="压力锅"  code="0xEC" value="21"/>
+<appliance name="净水机"  code="0xED" value="22"/>
+<appliance name="豆浆机"  code="0xEF" value="23"/>
+<appliance name="洗碗机"  code="0xE1" value="24"/>
+<appliance name="电热水器"  code="0xE2" value="25"/>
+<appliance name="燃热水器"  code="0xE3" value="26"/>
+<appliance name="水能源系统"  code="0xE4" value="27"/>
+<appliance name="风扇"  code="0xFA" value="28"/>
+<appliance name="取暖器"  code="0xFB" value="29"/>
+<appliance name="净化器"  code="0xFC" value="30"/>
+<appliance name="加湿器"  code="0xFD"  value="31"/>
+<appliance name="空调扇"  code="0xFE" value="32"/>
+<appliance name="广播家电类型(所有家电都接收)"  code="0xFF" value="33"/>
+<!-- 控制指令 -->
+<command name="ON" code="AA 20 AC 00 00 00 00 00 01 02 40 43 2C D0 7F 7F 00 3F 00 00 00 10 02 00 00 00 00 0A 0E 00 2A 05 1C"/>
+<command name="OFF" code="AA 20 AC 00 00 00 00 00 01 02 40 42 2C D0 7F 7F 00 3F 00 00 00 10 02 00 00 00 00 0A 0E 00 29 2C F7"/>
+<command name="ON with 20D High" code="AA 20 AC 00 00 00 00 00 01 02 40 43 24 D0 7F 7F 00 3F 00 00 00 10 02 00 00 00 00 0A 0E 00 2B C5 63"/>
+<command name="ON with 23D High" code="AA 20 AC 00 00 00 00 00 01 02 40 43 27 D0 7F 7F 00 3F 00 00 00 10 02 00 00 00 00 0A 0E 00 2C 34 F0"/>
+<command name="ON with 23D Low" code="AA 20 AC 00 00 00 00 00 01 02 40 43 27 A8 7F 7F 00 3F 00 00 00 10 02 00 00 00 00 0A 0E 00 2D 0A 41"/>
+<command name="Query SN" code="AA 24 AC 00 00 00 00 00 01 0F 80 40 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 2C 33"/>
+</appliances>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/task  
+        http://www.springframework.org/schema/task/spring-task-4.0.xsd" 
+		default-autowire="byName">
+
+	<context:annotation-config />
+	<task:annotation-driven/> 
+	<context:component-scan base-package="com.agilean"/>
+	 
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+	<aop:aspectj-autoproxy />
+	<bean class="com.agilean.lessons.timer.aop.ControllerAdvice"/>
+	<!-- restTemplate -->
+	<bean id="httpClientFactory" class="org.springframework.http.client.SimpleClientHttpRequestFactory">  
+            <property name="connectTimeout"  value="${wbs.connect.timeout}"/>
+            <property name="readTimeout"  value="${wbs.read.timeout}"/>
+      </bean>  
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">         
+	<property name="messageConverters">             
+	<list>                 
+	<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
+	<bean id="formHttpMessageConverter" class="org.springframework.http.converter.FormHttpMessageConverter" />             
+	</list>         
+	</property> 
+	<constructor-arg ref="httpClientFactory"/>      
+	</bean> 
+	
+	<!-- httpClient start -->
+	
+	<bean id="httpPool" class="org.apache.http.impl.conn.PoolingHttpClientConnectionManager"
+		destroy-method="close">
+		<property name="maxTotal">
+			<value>${http.maxTotal}</value>
+		</property>
+		<property name="defaultMaxPerRoute">
+			<value>${http.defaultMaxPerRoute}</value>
+		</property>
+	</bean>
+	
+	<bean id="keepAlive" class="com.agilean.lessons.timer.http.KeepAliveStrategy" >
+		<property name="keepAliveTime">
+			<value>${http.keepAliveTime}</value>
+		</property>
+	</bean>
+	<bean id="retryStrategy" class="com.agilean.lessons.timer.http.RetryStrategy" />
+		
+	<!-- 初始化 -->
+	<bean id="init" class="com.agilean.lessons.timer.util.SystemInitImpl" init-method="init" destroy-method="destroy"/>
+	<bean id="springContextUtil" class="com.agilean.lessons.timer.util.SpringContextUtil" lazy-init="false"/>
+	<bean id="sppc" class="com.agilean.lessons.timer.util.SystemPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>
+					classpath:/conn.properties
+				</value>
+			</list>
+		</property>
+		<property name="fileEncoding" value="utf-8" />
+	</bean>
+	<!--  
+	<import resource="classpath*:/mongo.xml" />
+	-->
+	<import resource="classpath*:/quartz.xml" />
+	<bean id="taskExecutor"   
+  class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">  
+               <property name="corePoolSize" value="1" />  
+               <property name="maxPoolSize" value="6" />  
+                <property name="WaitForTasksToCompleteOnShutdown" value="true" /> 
+                <property name="keepAliveSeconds" value="6000"/>
+                <property name="queueCapacity" value="60"/>  
+   </bean>  
+   
+   <bean id="controlUrl" class="java.lang.String">
+     <constructor-arg>
+     <value>${control.server}</value>
+     </constructor-arg>
+   </bean>
+ 
+</beans>

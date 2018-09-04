@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>midea air contrlloer</title>
+<script>
+  function sortArray()
+  {
+	  var a=[];
+	  var a1={"time":"0-2-3","volume":23};
+	  var a2={"time":"0-1-3","volume":26};
+	  var a3={"time":"1-0-1","volume":29};
+	  a.push(a1);
+	  a.push(a2);
+	  a.push(a3);
+	  a.sort(timeAscSort);
+	  /*a.forEach(
+			  
+	  function(x)
+	  {
+		  
+		  alert(x.time);
+	  }
+	  
+	  );*/
+	  
+	 
+	  for(var i=0;i<a.length;i++)
+	  {
+		 alert("i="+i+",-time="+a[i].time+",volume="+a[i].volume);
+	  }
+  }
+  
+  function timeAscSort(a,b) 
+  { 
+      var s1=a.time.split("-");
+      var s2=b.time.split("-");
+      var h1=s1[0];
+      var m1=s1[1];
+      var ss1=s1[2];
+      
+      var h2=s2[0];
+      var m2=s2[1];
+      var ss2=s2[2];
+      
+      if(h1!=h2)
+      {
+    	 return h1-h2; 
+      }else 
+      {
+    	if(m1!=m2) 
+    	{
+    		return m1-m2;
+    	}else
+    	{
+    		return ss1-ss2;
+    	}
+      }
+      
+  } 
+
+  
+  function filterArray(ac)
+  {
+    if(ac==null||ac.length<=2)
+    {
+       return ac;
+    }
+    
+    var len=ac.length;
+    var bc=[];
+    for(var i=0;i<len;i++)
+    {
+       if(i==0)
+       {
+          var t=0;
+         if(ac[i].volume-ac[i+1].volume>0)
+         { 
+           t=1;
+         }
+         bc[i]={time:ac[i].time,volume:ac[i].volume,f:0,b:t};
+       }else if(i==len-1) 
+       {
+          var t=0;
+         if(ac[i-1].volume-ac[i].volume>0)
+         { 
+           t=1;
+         }
+         bc[i]={time:ac[i].time,volume:ac[i].volume,f:t,b:0};
+       }else
+       {
+           var t1=0;
+           var t2=0;
+          if(ac[i].volume-ac[i-1].volume<0)
+          {
+             t1=1;
+          }
+          if(ac[i].volume-ac[i+1].volume>0)
+          {
+            t2=1;
+          }
+           bc[i]={time:ac[i].time,volume:ac[i].volume,f:t1,b:t2};
+       }
+    
+    }
+    
+    return bc;
+  
+  }
+  function filter()
+  {
+	  
+	  var ac=[{time:"12-3-22",volume:3},{time:"12-3-21",volume:4},{time:"12-3-23",volume:1},{time:"12-3-24",volume:3.5},{time:"12-3-26",volume:3.4},{time:"12-3-25",volume:3.6}];
+	    
+	  var bc=filterArray(ac);
+	   
+	  for(var i=0;i<bc.length;i++)
+	  {
+		  alert("i="+i+",-time="+bc[i].time+",volume="+bc[i].volume+",f="+bc[i].f+",b="+bc[i].b);
+	  }
+	  
+  }
+  
+
+  function condenseArray(bc)
+  {
+	  
+	  for(var i=0;i<bc.length;i++)
+	  {
+		 var obj=bc[i];
+		 if(obj.f>0&&obj.b>0)
+		 {
+			 bc.splice(i,1);
+			 alert("condense2");
+		 }
+	  }
+	  alert("bc.length="+bc.length);
+	  var flag=doClean(bc);
+	  alert("doClean="+flag);
+	  if(flag)
+	  {
+		  condenseArray(bc);
+	  }
+	  
+	  var s1=bc[0];
+	  var s2=bc[bc.length-1];
+	 
+	  if(s1.b>0) {bc.splice(0,1);}
+	  
+	  if(s2.f>0){ bc.splice(bc.length-1,1);}
+	  
+	   return bc;
+	  
+  }
+  
+  
+  function doClean(bc)
+  {
+	  alert("doClean");
+	  bc.forEach(
+		function(x)	
+		{
+			if(x.f>0&&x.b>0){ return true};
+		}
+	  
+	  );
+	  return false;
+  }
+  
+  
+  
+  function condense()
+  {
+	  
+	  var ac=[{time:"12:03:21",volume:4},{time:"12:03:22",volume:3},{time:"12:03:23",volume:1},{time:"12:03:24",volume:3.5},{time:"12:03:25",volume:3.6},{time:"12:03:26",volume:3.4}];
+	    
+	  var bc=filterArray(ac);
+	   
+	  for(var i=0;i<bc.length;i++)
+	  {
+		  alert("i="+i+",-time="+bc[i].time+",volume="+bc[i].volume+",f="+bc[i].f+",b="+bc[i].b);
+	  }
+	  
+	  var arr=condenseArray(bc);
+	  alert(arr.length);
+	  for(var i=0;i<arr.length;i++)
+	  {
+		  alert("condense,i="+i+",-time="+arr[i].time+",volume="+arr[i].volume+",f="+arr[i].f+",b="+arr[i].b);
+	  }
+	  
+  }
+
+  function dayVolume()
+  {
+	  
+	  var ac=[{time:"12-3-22",volume:3},{time:"12-3-21",volume:4},{time:"12-3-23",volume:1},{time:"12-3-24",volume:3.5},{time:"12-3-26",volume:3.4},{time:"12-3-25",volume:3.6}];
+	  
+	  var bc=ac.sort(timeAscSort);
+	  
+	  for(var i=0;i<bc.length;i++)
+	  {
+		   alert("--i="+i+",time="+bc[i].time+",volume="+bc[i].volume);
+	  }
+	  var volume=getDayVolume(bc);
+	 
+	  var minObj=volume[0];
+	  var maxObj=volume[1];
+	  
+	  alert("--min="+minObj+",max="+maxObj);
+	  
+	  alert("--volume="+(maxObj.volume-minObj.volume));
+	  
+  }
+  
+  function getDayVolume(bc)
+  {
+	  var res=[];
+      if(doSplice(bc))
+      {
+    	  
+         if(bc[1].volume<bc[0].volume)
+         {
+        	 bc.splice(0,1);
+         }
+        var len=bc.length;
+        if(bc[len-1].volume<bc[len-2].volume)
+        {
+        	 bc.splice(len-1,1); 
+        	 
+        }
+        
+         
+         getDayVolume(bc);
+         
+      }
+     if(bc.length==0) return 0;
+     if(bc.length==2)
+     {
+       var b1=bc[0];
+       var b2=bc[1];
+       if(b1.volume==0||b2.volume==0) 
+       {
+    	 res[0]={time:b1.time,volume:0}; 
+    	 res[1]={time:b2.time,volume:0};
+    	 return res;
+        }
+       if(b2.volume<b1.volume) 
+       {
+    	 res[0]={time:b1.time,volume:0}; 
+      	 res[1]={time:b2.time,volume:0};
+      	 return res;
+       }
+       else
+       {
+    	   res[0]={time:b1.time,volume:b1.volume}; 
+      	   res[1]={time:b2.time,volume:b2.volume};
+      	
+    	   return res; 
+    	   
+       }
+     }
+     
+     res[1]={time:bc[bc.length-1].time,volume:bc[bc.length-1].volume}; 
+	 res[0]={time:bc[0].time,volume:bc[0].volume};
+     return res;
+      
+  }
+      
+  function doSplice(bc)
+  {
+      if(bc.length>=3)
+      {
+     
+        if(bc[1].volume<bc[0].volume)
+        {
+        	 return true;
+        }
+       
+        var len=bc.length;
+        if(bc[len-1].volume<bc[len-2].volume)
+        {
+        	 return true;
+        }
+        return false;
+      }else
+      {
+        return false;
+      }
+    
+  }
+  
+</script>
+</head>
+<body>
+hello,midea!
+
+<input type="button" value="sortArray" onClick="sortArray();"/>
+
+<input type="button" value="filterArray" onClick="filter();"/>
+
+<input type="button" value="condenseArray" onClick="condense();"/>
+
+<input type="button" value="dayVolume" onClick="dayVolume();"/>
+</body>
+</html>
