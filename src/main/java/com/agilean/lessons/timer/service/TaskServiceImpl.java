@@ -50,13 +50,14 @@ public class TaskServiceImpl implements TaskService {
 		{
 		FamilyAirAppointForm form = null;
 		form = (FamilyAirAppointForm)JacksonTool.fromJsonToObject(familyAirAppointForm, FamilyAirAppointForm.class);
+		System.out.println("--form="+form);
 		StdScheduler scheduler=(StdScheduler)schedulerFactory.getScheduler();
-		log.info("----spring scheduler="+scheduler);
+		System.out.println("----spring scheduler="+scheduler);
 	    for(String group: scheduler.getTriggerGroupNames()) 
 	    { 
               for(TriggerKey triggerKey : scheduler.getTriggerKeys(triggerGroupEquals(group))) 
               { 
-                 log.info("---Found trigger identified by: " + triggerKey); 
+            	  System.out.println("---Found trigger identified by: " + triggerKey); 
               }
         } 
 	     for(String group: scheduler.getJobGroupNames()) 
@@ -64,39 +65,41 @@ public class TaskServiceImpl implements TaskService {
 	       // enumerate each job in group 
 	         for(JobKey jobKey : scheduler.getJobKeys(jobGroupEquals(group)))
 	         { 
-	        	 log.info("----Found job identified by: " + jobKey); 
+	        	 System.out.println("----Found job identified by: " + jobKey); 
 	          } 
 	      }
-	        Long familyId=form.getFamilyId();
+	        Long applianceId=form.getApplianceId();
 	        Integer status=form.getStatus();//open or close the timer
 	        int[] weeks=form.getWeek();
 	        Integer repeat=form.getRepeat();
 	        String time=form.getTime();
-	        log.info("----time="+time);
+	        System.out.println("----time="+time);
 	        Integer timeZone=form.getTimeZone();
 	        String schedId = scheduler.getSchedulerInstanceId();
 	        TimeZone tz=JacksonTool.getTimeZone(timeZone);
-	        String jobkey=Constants.APPOINT_JOB_GROUP_PREFIX+familyId;
-	        String triggerkey=Constants.APPOINT_TRIGGER_GROUP_PREFIX+familyId;
-	        JobDetail job=scheduler.getJobDetail(jobKey(jobkey, Constants.APPOINT_JOB_GROUP));
+	        String jobkey=Constants.APPOINT_JOB_GROUP_PREFIX+applianceId;
+	        String triggerkey=Constants.APPOINT_TRIGGER_GROUP_PREFIX+applianceId;
+	        JobKey key=new JobKey(jobkey,Constants.APPOINT_JOB_GROUP);
+	        if (scheduler.getJobDetail(key)!=null) {
+	        	 scheduler.deleteJob(key);
+	        }
+	       // JobDetail job=scheduler.getJobDetail(jobKey(jobkey, Constants.APPOINT_JOB_GROUP));
 	        //CronScheduleBuilder cb=cronSchedule(JacksonTool.generateCronExpression(weeks, time));
 	        if(repeat.intValue()==2)// repeat,the CronTrigger trigger should be used.
 	        {
+	        	String cronExpress=JacksonTool.generateCronExpression(weeks, time);
+	        	
 	        	CronTrigger trigger = newTrigger()
 	                    .withIdentity(triggerkey, Constants.APPOINT_JOB_GROUP)
 	                    .withSchedule(cronSchedule(JacksonTool.generateCronExpression(weeks, time)))
 	                    .build();
 	        	
 	        	 trigger.getTimeZone().setDefault(tz);
-	        	 if(job!=null)
-	        	 {
-	        		 log.info("---job="+job.getKey());
-	        		 scheduler.deleteJob(jobKey(jobkey,Constants.APPOINT_JOB_GROUP));
-	        	 }
-	        		 job = newJob(FamilyAirAppointJob.class) 
+	        	 
+	        	 JobDetail job = newJob(FamilyAirAppointJob.class) 
 	 			                .withIdentity(jobkey, Constants.APPOINT_JOB_GROUP)
 	 			                .build();
-	        		 job.getJobDataMap().put("familyId", familyId);
+	        		 job.getJobDataMap().put("appliacneId", applianceId);
 	       	         job.getJobDataMap().put("status", status);
 	       	         job.getJobDataMap().put("time",time);
 	       	         job.getJobDataMap().put("repeat",repeat);
@@ -108,26 +111,11 @@ public class TaskServiceImpl implements TaskService {
 	        	Map<JobDetail,Set<? extends Trigger>> triggerMap=new HashMap<JobDetail,Set<? extends Trigger>>();
 	        	Set<SimpleTrigger> triggers=new HashSet<SimpleTrigger>();
 	        	//1,remove all the triggers of job in case job has been existed
-	        	 if(job!=null)
-	        	 {
-	        		 scheduler.deleteJob(jobKey(jobkey));
-	        		 /*job.getJobDataMap().put("familyId", familyId);
-	       	         job.getJobDataMap().put("status", status);
-	       	         job.getJobDataMap().put("time",time);
-	       	         job.getJobDataMap().put("repeat",repeat);
-	       	         job.getJobDataMap().put("familyAirAppointForm", familyAirAppointForm);
-	        	     List<Trigger> jobTriggers =(List<Trigger>)scheduler.getTriggersOfJob(jobKey(jobkey, Constants.APPOINT_JOB_GROUP));
-	        	     for(Trigger t:jobTriggers)
-	        	     {
-	        		   log.info("---trigger key="+t.getKey().getName());
-	        		   scheduler.unscheduleJob(t.getKey()) ;
-	        	     }*/
-	        	   
-	        	 }
-	        		 job = newJob(FamilyAirAppointJob.class) 
+	        	
+	        	JobDetail job = newJob(FamilyAirAppointJob.class) 
 	 			                .withIdentity(jobkey, Constants.APPOINT_JOB_GROUP).storeDurably()
 	 			                .build(); 
-	        		 job.getJobDataMap().put("familyId", familyId);
+	        		 job.getJobDataMap().put("applianceId", applianceId);
 	       	         job.getJobDataMap().put("status", status);
 	       	         job.getJobDataMap().put("time",time);
 	       	         job.getJobDataMap().put("repeat",repeat);
@@ -140,11 +128,11 @@ public class TaskServiceImpl implements TaskService {
 	        		        Calendar calendar=Calendar.getInstance(JacksonTool.getTimeZone(timeZone));
 	        		        calendar.setTime(new Date());
 	        		        Date appointDate=calendar.getTime();
-	        		        log.info("--appointDate="+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(appointDate));
+	        		        System.out.println("--appointDate="+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(appointDate));
 	        		       
-	        		        log.info("--date time="+date.getTime());
-	        		        log.info("--new Date().getTime()="+new Date().getTime());
-	        		        log.info("--System.currentTimeMillis()="+System.currentTimeMillis());
+	        		        System.out.println("--date time="+date.getTime());
+	        		        System.out.println("--new Date().getTime()="+new Date().getTime());
+	        		        System.out.println("--System.currentTimeMillis()="+System.currentTimeMillis());
 	        		        if(date.getTime()>System.currentTimeMillis())
 	        		        {
 	        		         i++;
@@ -162,6 +150,7 @@ public class TaskServiceImpl implements TaskService {
 	        	   scheduler.scheduleJobs(triggerMap, true); 
 	        }
 	      scheduler.start();
+	      System.out.println("---scheduler started?"+scheduler.isStarted());
 	      BasePojo model=new  BasePojo();
 	      model.setErrCode("0");
 	      model.setErrMsg("success");
@@ -169,6 +158,7 @@ public class TaskServiceImpl implements TaskService {
 	      return res;
 		}catch(Exception e)    
 		{
+			e.printStackTrace();
 			log.error(e);
 			throw new FamilyAirAppointSetException(e);
 		}  	
@@ -180,8 +170,8 @@ public class TaskServiceImpl implements TaskService {
 		try
 		{
 		FamilyAirAppointForm form=(FamilyAirAppointForm)JacksonTool.fromJsonToObject(familyAirAppointForm, FamilyAirAppointForm.class);
-	    Long familyId=form.getFamilyId();
-	    String jobkey=Constants.APPOINT_JOB_GROUP_PREFIX+familyId;
+	    Long applianceId=form.getApplianceId();
+	    String jobkey=Constants.APPOINT_JOB_GROUP_PREFIX+applianceId;
 	    StdScheduler scheduler=(StdScheduler)schedulerFactory.getScheduler();
 	    JobDetail job=scheduler.getJobDetail(jobKey(jobkey, Constants.APPOINT_JOB_GROUP));
 	    

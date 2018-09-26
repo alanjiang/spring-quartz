@@ -1,0 +1,1 @@
+https://github.com/elventear/quartz-scheduler/blob/master/distribution/src/main/assembly/root/docs/dbTables/tables_postgres.sql

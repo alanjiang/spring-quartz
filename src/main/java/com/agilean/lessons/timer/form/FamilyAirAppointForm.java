@@ -1,11 +1,7 @@
 package com.agilean.lessons.timer.form;
 public class FamilyAirAppointForm extends BasePojo
 {
-    private Long sceneId;
-    private Long userId;
-    private Long roomId;
-    private String roomName;
-    private Integer roomType;
+    
     private Long  applianceId;
     private String applianceName;
     private Integer applianceType;
@@ -15,36 +11,7 @@ public class FamilyAirAppointForm extends BasePojo
     private Integer timeZone;
     private Integer status;//预约状态，1关闭，2开启，默认2
     private Integer repeat;//1不重复，2重复。
-	public Long getSceneId() {
-		return sceneId;
-	}
-	public void setSceneId(Long sceneId) {
-		this.sceneId = sceneId;
-	}
-	public Long getUserId() {
-		return userId;
-	}
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-	public Long getRoomId() {
-		return roomId;
-	}
-	public void setRoomId(Long roomId) {
-		this.roomId = roomId;
-	}
-	public String getRoomName() {
-		return roomName;
-	}
-	public void setRoomName(String roomName) {
-		this.roomName = roomName;
-	}
-	public Integer getRoomType() {
-		return roomType;
-	}
-	public void setRoomType(Integer roomType) {
-		this.roomType = roomType;
-	}
+	
 	public Long getApplianceId() {
 		return applianceId;
 	}

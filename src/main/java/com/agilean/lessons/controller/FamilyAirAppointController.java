@@ -27,8 +27,10 @@ public class FamilyAirAppointController extends BaseController {
 	private SchedulerFactoryBean schedulerFactory;
 	@RequestMapping(value = "/setFamilySceneAppoint", method = RequestMethod.POST)
 	public ResponseEntity<String> setFamilySceneAppoint(@RequestBody String input) throws Throwable {
-		logger.info("---setFamilySceneAppoint="+input);
+		System.out.println("---setFamilySceneAppoint="+input);
 		String result = taskService.setTask(input,schedulerFactory);
+		System.out.println("******result="+result);
+		
 		return new ResponseEntity<String>(result, HeaderUtil.getHeader(HttpHeaderEnum.JSON), HttpStatus.OK);
 	}
 	@RequestMapping(value = "/closeFamilySceneAppoint", method = RequestMethod.POST)
@@ -40,7 +42,7 @@ public class FamilyAirAppointController extends BaseController {
 	
 	@RequestMapping(value = "/openOrClose", method = RequestMethod.POST)
 	public ResponseEntity<String> openOrClose(@RequestBody String input) throws Throwable {
-		logger.info("---closeFamilySceneAppointForm="+input);
+		System.out.println("--openOrClose familySceneAppointForm="+input);
 		String result = taskService.setTask(input,schedulerFactory);
 		return new ResponseEntity<String>(result, HeaderUtil.getHeader(HttpHeaderEnum.JSON), HttpStatus.OK);
 	}

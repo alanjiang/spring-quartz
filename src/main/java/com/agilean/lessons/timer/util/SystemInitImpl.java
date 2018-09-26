@@ -12,7 +12,7 @@ public class SystemInitImpl implements SystemInit{
 	 private static SimpleDateFormat ymdFormat= new SimpleDateFormat("yyyy-MM-dd");
 	public void init() 
 	{
-       log.info(">>>>>> System Init initial start <<<<<<<");
+       System.out.println(">>>>>> System Init initial start <<<<<<<");
 	}
 	public void afterApplicationContextSet() throws Exception  
 	{
@@ -21,7 +21,7 @@ public class SystemInitImpl implements SystemInit{
 		if( containKeys(p,"control.server"))			
 		{
 			  Constants.CONTROL_SERVER=p.getProperty("control.server");
-			  log.info("---The necessary properties have been initilized successfully----");
+			  System.out.println("---The necessary properties have been initilized successfully----");
 		}
 		else
 		{

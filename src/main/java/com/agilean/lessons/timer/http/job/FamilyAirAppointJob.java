@@ -20,7 +20,7 @@ public class FamilyAirAppointJob extends BaseJob
 	     String time=data.getString("time");
 	     String familyAirAppointForm=data.getString("familyAirAppointForm");
 	     //do something, control the appliance
-	     logger.info("---FamilyAirAppointJob is triggered-at-"+time);
+	     System.out.println("---FamilyAirAppointJob is triggered-at-"+time);
 	     FamilyAirAppointForm f=(FamilyAirAppointForm)JacksonTool.fromJsonToObject(familyAirAppointForm, FamilyAirAppointForm.class);
 	     if(f.getStatus().intValue()==2)// when home model is start
 	     {

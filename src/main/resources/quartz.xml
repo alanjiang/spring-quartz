@@ -56,7 +56,7 @@
      -->
 	<bean id="schedulerFactory" 
 	
-		class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="true">
 		
 		<property name="configLocation" value="classpath:quartz.properties" />
 		<!-- 
